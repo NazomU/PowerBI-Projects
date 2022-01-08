@@ -1,0 +1,51 @@
+-- Average NPS Rating
+Average NPS Rating = AVERAGE('Sales Data'[nps_score])
+
+
+-- NPS Value/Sentiments
+NPS Value = IF(
+    'Sales Data'[nps_score] IN {0,1,2,3,4,5,6},
+    "Detractor",
+    IF(
+        'Sales Data'[nps_score] IN {7,8},
+        "Passive",
+        IF(
+        'Sales Data'[nps_score] IN {9,10},
+        "Promoter",
+        "No Score")
+    )
+)
+
+-- Promoter Count
+Promoter Count = 
+    CALCULATE (
+    COUNT('Sales Data'[NPS Value]),
+    FILTER('Sales Data','Sales Data'[NPS Value] IN {"Promoter"})
+)
+
+-- Passive Count
+Passive Count = 
+    CALCULATE (
+    COUNT('Sales Data'[NPS Value]),
+    FILTER('Sales Data','Sales Data'[NPS Value] IN {"Passive"})
+)
+
+
+-- Detractor Count
+Detractor Count = 
+    CALCULATE (
+    COUNT('Sales Data'[NPS Value]),
+    FILTER('Sales Data','Sales Data'[NPS Value] IN {"Detractor"})
+)
+
+
+-- NPS Value Count
+NPS Value Count = 
+    CALCULATE (
+    COUNT('Sales Data'[NPS Value]),
+    FILTER('Sales Data','Sales Data'[NPS Value] IN {"Promoter","Passive","Detractor"})
+)
+
+-- Calculate NPS Score
+NPS Score = (([Promoter Count]/[NPS Value Count]) - ([Detractor Count]/[NPS Value Count]))*100
+
